@@ -15,15 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
 const PORT = process.env.PORT || 5000;
 mongoose_1.default.connect("mongodb+srv://FraterSKS:fiZD5oGbGI5QgKkb@cluster0.uxhal5c.mongodb.net/todotwo?retryWrites=true&w=majority");
 require("./models/Todo");
 const Todo = mongoose_1.default.model("Todo");
 const app = (0, express_1.default)();
+app.use(express_1.default.static(path_1.default.join(__dirname, "..", "build")));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.get("/", (req, res) => {
-    res.json("Home");
+app.get("/*", (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, "..", "build", "index.html"));
 });
 app.get("/api", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield Todo.find({});
