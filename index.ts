@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 const PORT = process.env.PORT || 5000;
-import keys from "./config/keys";
-mongoose.connect(keys.MONGO_URI);
+mongoose.connect(
+  "mongodb+srv://FraterSKS:fiZD5oGbGI5QgKkb@cluster0.uxhal5c.mongodb.net/todotwo?retryWrites=true&w=majority"
+);
 require("./models/Todo");
 const Todo = mongoose.model("Todo");
 
