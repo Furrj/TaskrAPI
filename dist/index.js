@@ -24,9 +24,9 @@ const app = (0, express_1.default)();
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "build")));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.get("/*", (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, "..", "build", "index.html"));
-});
+// app.get("/*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+// });
 app.get("/api", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield Todo.find({});
     res.json(data);
