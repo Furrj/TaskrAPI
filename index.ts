@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import path from "path";
 
 const PORT = process.env.PORT || 5000;
 mongoose.connect(
@@ -11,11 +12,12 @@ const Todo = mongoose.model("Todo");
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.json("Home");
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 });
 
 app.get("/api", async (req, res) => {
