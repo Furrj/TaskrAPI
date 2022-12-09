@@ -42,10 +42,18 @@ type userSend = {
 // });
 
 //TODO DATA
-app.get("/api", async (req, res) => {
-  const data = await Todo.find({});
+app.put("/api", async (req, res) => {
+  const { id } = req.body;
+  try {
+    const user = await User.findById(id).populate("todos");
 
-  res.json(data);
+    if (user) {
+      res.json(user.todos);
+    }
+  } catch (e) {
+    console.log(`Error: ${e}`);
+    res.json(`Error: ${e}`);
+  }
 });
 
 app.post("/api", async (req, res) => {
@@ -63,7 +71,7 @@ app.post("/api", async (req, res) => {
   }
 });
 
-app.put("/api", async (req, res) => {
+app.put("/api/newTodo", async (req, res) => {
   const id = req.body.id;
   try {
     const sent = await Todo.findByIdAndUpdate(id, {
@@ -71,6 +79,22 @@ app.put("/api", async (req, res) => {
       text: req.body.text,
     });
     res.json(sent);
+  } catch (e) {
+    console.log(`Error: ${e}`);
+    res.json(`Error: ${e}`);
+  }
+});
+
+app.put("/api/delete", async (req, res) => {
+  const { todoID, userID } = req.body;
+  try {
+    const deleted = await Todo.findByIdAndDelete(todoID);
+    const user = await User.findById(userID);
+    if (user) {
+      await user.updateOne({ $pull: { todos: todoID } });
+      await user.save();
+    }
+    res.json(deleted);
   } catch (e) {
     console.log(`Error: ${e}`);
     res.json(`Error: ${e}`);
