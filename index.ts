@@ -49,9 +49,13 @@ app.get("/api", async (req, res) => {
 });
 
 app.post("/api", async (req, res) => {
+  const { title, text, user } = req.body;
   try {
-    const newTodo = new Todo(req.body);
+    const newTodo = new Todo({ title, text });
     const saved = await newTodo.save();
+    const foundUser: any = await User.findById(user);
+    foundUser.todos.push(newTodo);
+    await foundUser.save();
     res.json(saved);
   } catch (e) {
     console.log(`Error: ${e}`);
