@@ -56,10 +56,10 @@ app.put("/api", async (req, res) => {
   }
 });
 
-app.post("/api", async (req, res) => {
-  const { title, text, user } = req.body;
+app.post("/api/newTodo", async (req, res) => {
+  const { title, text, due, completed, user } = req.body;
   try {
-    const newTodo = new Todo({ title, text });
+    const newTodo = new Todo({ title, text, due, completed });
     const saved = await newTodo.save();
     const foundUser: any = await User.findById(user);
     foundUser.todos.push(newTodo);
@@ -77,6 +77,7 @@ app.put("/api/newTodo", async (req, res) => {
     const sent = await Todo.findByIdAndUpdate(id, {
       title: req.body.title,
       text: req.body.text,
+      due: req.body.due,
     });
     res.json(sent);
   } catch (e) {
