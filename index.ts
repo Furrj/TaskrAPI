@@ -102,11 +102,27 @@ app.put("/api/delete", async (req, res) => {
   }
 });
 
-app.delete("/api/:id", async (req, res) => {
-  const { id } = req.params;
+// app.delete("/api/:id", async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const deleted = await Todo.findByIdAndDelete(id);
+//     res.json(deleted);
+//   } catch (e) {
+//     console.log(`Error: ${e}`);
+//     res.json(`Error: ${e}`);
+//   }
+// });
+
+app.put("/api/markComplete", async (req, res) => {
+  const { id } = req.body;
+
   try {
-    const deleted = await Todo.findByIdAndDelete(id);
-    res.json(deleted);
+    const foundTodo = await Todo.findById(id);
+    if (foundTodo) {
+      foundTodo.completed = true;
+      const savedTodo = await foundTodo.save();
+      res.json(savedTodo);
+    }
   } catch (e) {
     console.log(`Error: ${e}`);
     res.json(`Error: ${e}`);
