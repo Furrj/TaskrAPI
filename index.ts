@@ -36,11 +36,6 @@ type userSend = {
   valid: boolean;
 };
 
-//ROUTES
-// app.get("/*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-// });
-
 //TODO DATA
 app.put("/api", async (req, res) => {
   const { id } = req.body;
@@ -101,17 +96,6 @@ app.put("/api/delete", async (req, res) => {
     res.json(`Error: ${e}`);
   }
 });
-
-// app.delete("/api/:id", async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const deleted = await Todo.findByIdAndDelete(id);
-//     res.json(deleted);
-//   } catch (e) {
-//     console.log(`Error: ${e}`);
-//     res.json(`Error: ${e}`);
-//   }
-// });
 
 app.put("/api/markComplete", async (req, res) => {
   const { id } = req.body;
@@ -187,6 +171,11 @@ app.post(
     }
   }
 );
+
+//SERVE FRONTEND
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+});
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}...`);
