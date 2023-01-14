@@ -3,6 +3,8 @@ import mongoose, { Model } from "mongoose";
 import cors from "cors";
 import path from "path";
 import bcrypt from "bcrypt";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 
 const PORT = process.env.PORT || 5000;
 
@@ -22,6 +24,22 @@ const app = express();
 app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+declare module "express-session" {
+  interface SessionData {
+    currentUser: userSend;
+  }
+}
+app.use(
+  session({
+    secret: "ABCDEFG",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 15,
+    },
+  })
+);
 
 //TS
 //TYPES
@@ -34,6 +52,12 @@ type userSend = {
   username: string;
   id: string;
   valid: boolean;
+};
+
+const invalidUser: userSend = {
+  username: "",
+  id: "",
+  valid: false,
 };
 
 //TODO DATA
@@ -113,6 +137,18 @@ app.put("/api/markComplete", async (req, res) => {
   }
 });
 
+app.get("/api/validate", async (req, res) => {
+  if (req.session.currentUser) {
+    if (req.session.currentUser.valid === true) {
+      return res.json(req.session.currentUser);
+    } else {
+      return res.json(invalidUser);
+    }
+  } else {
+    return res.json(invalidUser);
+  }
+});
+
 //USER DATA
 app.post(
   "/register",
@@ -137,11 +173,13 @@ app.post(
 
     await newUser.save();
 
-    return res.json({
+    req.session.currentUser = {
       username: newUser.username,
       id: newUser._id,
       valid: true,
-    });
+    };
+
+    return res.json(req.session.currentUser);
   }
 );
 
@@ -161,16 +199,22 @@ app.post(
       userQuery.password
     );
     if (checkPassword) {
-      return res.json({
+      req.session.currentUser = {
         username: userQuery.username,
         id: userQuery._id,
         valid: true,
-      });
+      };
+      return res.json(req.session.currentUser);
     } else {
       return res.json(invalidUser);
     }
   }
 );
+
+app.get("/logout", (req, res) => {
+  req.session.currentUser = invalidUser;
+  res.json("Logged out");
+});
 
 //SERVE FRONTEND
 app.get("/*", (req, res) => {
