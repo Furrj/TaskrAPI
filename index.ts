@@ -42,7 +42,6 @@ app.use(
 );
 
 //TS
-//TYPES
 type userInfo = {
   username: string;
   password: string;
@@ -60,7 +59,7 @@ const invalidUser: userSend = {
   valid: false,
 };
 
-//TODO DATA
+//GET USER TODOS
 app.put("/api", async (req, res) => {
   const { id } = req.body;
   try {
@@ -75,6 +74,7 @@ app.put("/api", async (req, res) => {
   }
 });
 
+//SUBMIT NEW TODO
 app.post("/api/newTodo", async (req, res) => {
   const { title, text, due, completed, user } = req.body;
   try {
@@ -90,6 +90,7 @@ app.post("/api/newTodo", async (req, res) => {
   }
 });
 
+//UPDATE EXISTING TODO
 app.put("/api/newTodo", async (req, res) => {
   const id = req.body.id;
   try {
@@ -105,6 +106,7 @@ app.put("/api/newTodo", async (req, res) => {
   }
 });
 
+//DELETE TODO
 app.put("/api/delete", async (req, res) => {
   const { todoID, userID } = req.body;
   try {
@@ -121,6 +123,7 @@ app.put("/api/delete", async (req, res) => {
   }
 });
 
+//MARK TODO AS COMPLETE
 app.put("/api/markComplete", async (req, res) => {
   const { id } = req.body;
 
@@ -137,6 +140,7 @@ app.put("/api/markComplete", async (req, res) => {
   }
 });
 
+//VALIDATE USER SESSION
 app.get("/api/validate", async (req, res) => {
   if (req.session.currentUser) {
     if (req.session.currentUser.valid === true) {
@@ -149,7 +153,7 @@ app.get("/api/validate", async (req, res) => {
   }
 });
 
-//USER DATA
+//REGISTER USER
 app.post(
   "/register",
   async (req, res): Promise<Response<any, Record<string, any>>> => {
@@ -183,6 +187,7 @@ app.post(
   }
 );
 
+//LOGIN USER
 app.post(
   "/login",
   async (req, res): Promise<Response<any, Record<string, any>>> => {
@@ -211,12 +216,13 @@ app.post(
   }
 );
 
+//LOGOUT USER
 app.get("/logout", (req, res) => {
   req.session.currentUser = invalidUser;
   res.json("Logged out");
 });
 
-//SERVE FRONTEND
+//SERVE HTML
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 });
