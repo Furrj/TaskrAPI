@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 
-const PORT = process.env.PORT || 5000; 
+const PORT = process.env.PORT || 5000;
 
 //MONGOOSE
 mongoose.connect(
